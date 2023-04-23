@@ -1,6 +1,6 @@
 import express,{Application} from 'express';
 import mongoose from 'mongoose';
-import {mainApp} from "./MainApp"
+import {MainApp} from "./MainApp"
 import dot from "dotenv"
 import db from "./config/db"
 
@@ -13,7 +13,7 @@ const server = app.listen(port, () => {
     console.log(`Server listening on ${port}`);
 })
 
-mainApp(app)
+MainApp(app)
 db()
 app.set("view engine", "ejs")
 

@@ -3,7 +3,7 @@ import {mainAppError, HTTP} from "./ErrorDefiner"
 
 
 const errorBuilder = (err: mainAppError, res: Response) => {
-    return  res.status(HTTP.INTERNAL_SERVER_ERROR).json({
+     res.status(HTTP.INTERNAL_SERVER_ERROR).json({
         name: err.name,
         message: err.message,
         status: HTTP.BAD_REQUEST,
@@ -14,7 +14,8 @@ const errorBuilder = (err: mainAppError, res: Response) => {
 export const errorHandler = (
     err: mainAppError,
     req: Request,
-    res: Response
+    res: Response,
+    next: NextFunction
 ) => {
     errorBuilder(err, res)
 }

@@ -5,7 +5,7 @@ import passport from "passport";
 import { errorHandler } from "./Middlewares/ErrorHandler"
 import userRouter from "./Router/useRoute"
 
-export const mainApp = (app:Application) => {
+export const MainApp = (app:Application) => {
     app.use(express.json())
         .use(cors())
         .use("/api", userRouter )
@@ -16,7 +16,7 @@ export const mainApp = (app:Application) => {
             })
         
         })
-        .get("/api/ejs::id", (req: Request, res: Response) => {
+        .get("/api/ejs:id", (req: Request, res: Response) => {
             
              const id = req.params.id
              const name = "edwin"

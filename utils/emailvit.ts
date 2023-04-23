@@ -15,6 +15,7 @@ const GOOGLE_REFRESHTOKEN =
 const oAuth = new google.auth.OAuth2(GOOGLE_ID, GOOGLE_SECRET, GOOGLE_REDIRECT);
 
 
+const url = "http://localhost:8080";
 
 oAuth.setCredentials({ refresh_token: GOOGLE_REFRESHTOKEN });
 
@@ -39,7 +40,7 @@ export const AccountVerificationService = async (
     
 
         const buildFile = path.join(__dirname, "../views/AccountVerification.ejs")
-        const data = await ejs.renderFile(buildFile, { name, OTP, token })
+        const data = await ejs.renderFile(buildFile, { name, OTP, token, url:url })
         
         const mailOption = {
             from: "verify your Account ",
