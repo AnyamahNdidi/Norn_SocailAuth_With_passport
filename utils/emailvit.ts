@@ -58,3 +58,45 @@ export const AccountVerificationService = async (
         console.log(error);
   }
 }
+
+export const forgetPasswordService = async (
+    token: any,
+    email: any,
+    name: any,
+) => {
+    try
+    {
+
+      const accessToken: any = await oAuth.getAccessToken()
+      const transport = nodemailer.createTransport({
+         service: "gmail",
+            auth: {
+                type: "OAuth2",
+				user: "shotkode123@gmail.com",
+				refreshToken: GOOGLE_REFRESHTOKEN,
+				clientId: GOOGLE_ID,
+				clientSecret: GOOGLE_SECRET,
+				accessToken: accessToken,
+            }
+    })
+
+        const buildFile = path.join(__dirname, "../views/forgetPassword.ejs")
+        const data = await ejs.renderFile(buildFile, { name, token, email })
+        const mailOption = {
+            from: "Reset Ypur Password",
+            to: email,
+            subject: "Password Reset",
+            html: data,
+        }
+
+        transport.sendMail(mailOption).then(() => { 
+            console.log("message sent");
+        })
+
+        
+    } catch (error)
+    {
+        console.log(error)
+    }
+    
+}
