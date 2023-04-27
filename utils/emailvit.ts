@@ -81,7 +81,7 @@ export const forgetPasswordService = async (
     })
 
         const buildFile = path.join(__dirname, "../views/forgetPassword.ejs")
-        const data = await ejs.renderFile(buildFile, { name, token, email })
+        const data = await ejs.renderFile(buildFile, { name, token, email,url:url })
         const mailOption = {
             from: "Reset Ypur Password",
             to: email,

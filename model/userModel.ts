@@ -7,7 +7,7 @@ interface Idate {
     password: string;
      OTP: string;
 
-   token: string;
+   tokenResetLink: string;
   verified: boolean;
   matchPassword(enterpassword: string): Promise<boolean>;
   _doc:any
@@ -30,7 +30,7 @@ const userModel = new mongoose.Schema({
       type: String,
     },
 
-    token: {
+    tokenResetLink: {
       type: String,
     },
 

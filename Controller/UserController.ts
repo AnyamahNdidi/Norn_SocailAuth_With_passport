@@ -6,6 +6,8 @@ import { AccountVerificationService, forgetPasswordService } from "../utils/emai
 import { TokenGenerator } from "../utils/GenerateToken"
 import crypto from "crypto";
 import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt";
+
 export const  registerUser = asyncHandler(async (req:Request, res:Response) => {
     try
     {
@@ -174,15 +176,15 @@ export const forgetPassword = asyncHandler (async(req:Request, res:Response) => 
         
         if (user)
         {
-            const newToken = TokenGenerator({ _id: user._id })
+            const userToken = TokenGenerator({ _id: user._id })
             await userModel.findByIdAndUpdate(
               user._id,
                 {
-                  token: newToken
+                  tokenResetLink: userToken
                 },
                 { new: true },
             )
-            forgetPasswordService(newToken, user.email, user.name  ).then(() => {
+            forgetPasswordService(userToken, user.email, user.name  ).then(() => {
                 console.log("message sent")
             })
 
@@ -210,16 +212,52 @@ export const forgetPassword = asyncHandler (async(req:Request, res:Response) => 
     }
 })
 
-export const resetPassword = asyncHandler((req:Request, res:Response) => {
+export const resetPassword = asyncHandler(async (req:Request, res:Response) => {
     try
     {
-        const { newPassword } = req.body
-        if (!newPassword)
+        const { password } = req.body
+        if (!password)
         {
             return res.status(HTTP.BAD_REQUEST).json({
                 message:"field can't be empty"
             })
         }
+
+        const token = req.params.token
+        const decoded = jwt.decode(token);
+        console.log(decoded);
+
+        if (token)
+        {
+            const user = await userModel.findOne({ _id: decoded._id })
+            
+            if (user?.tokenResetLink !== "")
+            {
+                const salt = await bcrypt.genSalt(10);
+				const hashed = await bcrypt.hash(password, salt);
+                await userModel.updateOne({
+                    password:hashed,
+                    token: ""
+                })
+
+                return res.status(HTTP.OK).json({
+                    message : "updated successfully"
+                })
+            } else
+            {
+               return res.status(HTTP.BAD_REQUEST).json({
+                nessage :"no token match click on the reset password link to get a new link"
+            })  
+            }
+            
+        } else
+        {
+            return res.status(HTTP.BAD_REQUEST).json({
+                nessage :"operation can't be done"
+            })
+        }
+
+
         
     } catch (error)
     {
